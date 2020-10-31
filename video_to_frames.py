@@ -31,28 +31,34 @@ def main():
     # arguments
     arguments = argument_parser.parse_args()
 
+    # parameters
+    frames_directory = arguments.output
+    prefix = arguments.prefix
+    video = arguments.input
+    format = arguments.format
+
     # check frame directory exists
-    if not path.exists(arguments.output):
-        print("{output} directory does not exist.".format(output=arguments.output))
-        makedirs(arguments.output)
-        print("{output} directory is created.".format(output=arguments.output))
+    if not path.exists(frames_directory):
+        print("{output} directory does not exist.".format(output=frames_directory))
+        makedirs(frames_directory)
+        print("{output} directory is created.".format(output=frames_directory))
 
     # capture video
-    print("Converting of video {input} to frames is started.".format(input=arguments.input))
-    video_capture = cv.VideoCapture(arguments.input)
+    print("Converting of video {input} to frames is started.".format(input=video))
+    video_capture = cv.VideoCapture(video)
 
     # read frame
-    print("{input} is reading.".format(input=arguments.input))
+    print("{input} is reading.".format(input=video))
     success, frame = video_capture.read()
 
     # loop
     frame_count = 0
     while success:
         # save frame as image
-        frame_path = "{output}/{prefix}{frame_count}.{format}".format(output=arguments.output,
-                                                                      prefix=arguments.prefix,
-                                                                      frame_count=frame_count,
-                                                                      format=arguments.format)
+        frame_file_name = "{prefix}{frame_count}.{format}".format(prefix=prefix,
+                                                                  frame_count=frame_count,
+                                                                  format=format)
+        frame_path = path.join(frames_directory, frame_file_name)
         cv.imwrite(frame_path, frame)
         print("{frame_path} is saved.".format(frame_path=frame_path))
 
@@ -60,7 +66,7 @@ def main():
         success, frame = video_capture.read()
         frame_count += 1
 
-    print("Converting of video {input} to frames is finished.".format(input=arguments.input))
+    print("Converting of video {input} to frames is finished.".format(input=video))
 
 
 # main
