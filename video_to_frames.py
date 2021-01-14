@@ -1,15 +1,15 @@
 # imports
-from argparse import ArgumentParser
-from os import path, makedirs
-import cv2 as cv
+import argparse
+import os
+import cv2
 
 
 # main function
 def main():
     # settings
-    argument_parser = ArgumentParser()
+    argument_parser = argparse.ArgumentParser()
 
-    # arguments
+    # create arguments
     argument_parser.add_argument('-i', '--input',
                                  type=str,
                                  default='video.avi',
@@ -22,43 +22,38 @@ def main():
                                  type=str,
                                  default='',
                                  help='frame prefix')
-    argument_parser.add_argument('-f', '--image-format',
+    argument_parser.add_argument('-f', '--format',
                                  type=str,
                                  default='jpg',
                                  help='frame as image format')
 
-    # arguments
+    # parse arguments
     arguments = argument_parser.parse_args()
 
-    # parameters
-    input = arguments.input_base
-    output = arguments.output_base
-    prefix = arguments.prefix
-    format = arguments.image_format
-
     # convert video to frames
-    video_to_frames(input=input, output=output, prefix=prefix, format=format)
+    video_to_frames(input=arguments.input, output=arguments.output, prefix=arguments.prefix, format=arguments.format)
 
 
 # convert video to frames function
-def video_to_frames(input, output, prefix, format):
+def video_to_frames(input, output, prefix, format, start=0, end=None):
     # info
-    print('Video to Frames Converting')
-    print('*' * 50)
     print('input: "{input}"'.format(input=input))
     print('output: "{output}"'.format(output=output))
     print('prefix: "{prefix}"'.format(prefix=prefix))
     print('format: "{format}"'.format(format=format))
+    print('start: "{start}"'.format(start=start))
+    if end is not None:
+        print('end: "{end}"'.format(end=end))
 
     # check output exists
-    if not path.exists(output):
+    if not os.path.exists(output):
         print('"{output}" directory does not exist.'.format(output=output))
-        makedirs(output)
+        os.makedirs(output)
         print('"{output}" directory is created.'.format(output=output))
 
     # capture video
     print('Converting is started.')
-    video_capture = cv.VideoCapture(input)
+    video_capture = cv2.VideoCapture(input)
 
     # read frame
     print('"{input}" is reading.'.format(input=input))
@@ -67,20 +62,28 @@ def video_to_frames(input, output, prefix, format):
     # loop for frames
     frame_count = 0
     while success:
-        # save frame as image
-        frame_file_name = '{prefix}{frame_count:05d}.{format}'.format(prefix=prefix, frame_count=frame_count,
-                                                                      format=format)
-        frame_path = path.join(output, frame_file_name)
-        cv.imwrite(frame_path, frame)
-        print('"{frame_file}" is saved into "{frames_directory}".'.format(frame_file=frame_file_name,
-                                                                          frames_directory=output))
+        if ((end is not None) and (start <= frame_count <= end)) or ((end is None) and (start <= frame_count)):
+            frame_file_name = '{prefix}{frame_count:05d}.{format}'.format(prefix=prefix,
+                                                                          frame_count=frame_count,
+                                                                          format=format)
+
+            # save frame as image
+            save_image(image_data=frame, image_file_name=frame_file_name, image_directory_path=output)
 
         # read next frame
         success, frame = video_capture.read()
         frame_count += 1
 
-    print('*' * 50)
     print('Converting is finished.')
+
+
+# save image data as image file function
+def save_image(image_data, image_file_name, image_directory_path, info=True):
+    image_file_path = os.path.join(image_directory_path, image_file_name)
+    cv2.imwrite(image_file_path, image_data)
+    if info:
+        print('"{image_file}" is saved into "{image_directory}".'.format(image_file=image_file_name,
+                                                                         image_directory=image_directory_path))
 
 
 # main
