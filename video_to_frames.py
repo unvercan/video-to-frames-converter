@@ -1,6 +1,7 @@
 # imports
 import argparse
 import os
+
 import cv2
 
 
@@ -26,12 +27,22 @@ def main():
                                  type=str,
                                  default='jpg',
                                  help='frame as image format')
+    argument_parser.add_argument('-s', '--start',
+                                 type=int,
+                                 default=0,
+                                 help='start frame index')
+    argument_parser.add_argument('-e', '--end',
+                                 type=int,
+                                 default=None,
+                                 help='end frame index')
 
     # parse arguments
     arguments = argument_parser.parse_args()
 
     # convert video to frames
-    video_to_frames(input=arguments.input, output=arguments.output, prefix=arguments.prefix, format=arguments.format)
+    video_to_frames(input=arguments.input, output=arguments.output,
+                    prefix=arguments.prefix, format=arguments.format,
+                    start=arguments.start, end=arguments.end)
 
 
 # convert video to frames function
