@@ -16,7 +16,7 @@ Command-line video to frame converter.
 ```
 python video_to_frames.py 
     -i /home/unvercanunlu/videos/video.avi 
-    -o  /home/unvercanunlu/frames 
+    -o /home/unvercanunlu/frames 
     -p frame 
     -f jpg
     -s 100
