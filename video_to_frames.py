@@ -1,4 +1,5 @@
-# imports
+# -*- coding: utf-8 -*-
+
 import argparse
 import os
 
@@ -40,27 +41,27 @@ def main():
     arguments = argument_parser.parse_args()
 
     # convert video to frames
-    video_to_frames(input=arguments.input, output=arguments.output,
-                    prefix=arguments.prefix, format=arguments.format,
-                    start=arguments.start, end=arguments.end)
+    video_to_frames(input_video=arguments.input, output_folder=arguments.output,
+                    name_prefix=arguments.prefix, frame_format=arguments.format,
+                    start_frame=arguments.start, end_frame=arguments.end)
 
 
 # convert video to frames function
-def video_to_frames(input, output, prefix, format, start=0, end=None):
+def video_to_frames(input_video, output_folder, name_prefix, frame_format, start_frame=0, end_frame=None):
     # info
-    print('input: "{input}"'.format(input=input))
-    print('output: "{output}"'.format(output=output))
-    print('prefix: "{prefix}"'.format(prefix=prefix))
-    print('format: "{format}"'.format(format=format))
-    print('start: "{start}"'.format(start=start))
-    if end is not None:
-        print('end: "{end}"'.format(end=end))
+    print('input: "{input}"'.format(input=input_video))
+    print('output: "{output}"'.format(output=output_folder))
+    print('prefix: "{prefix}"'.format(prefix=name_prefix))
+    print('format: "{format}"'.format(format=frame_format))
+    print('start: "{start}"'.format(start=start_frame))
+    if end_frame is not None:
+        print('end: "{end}"'.format(end=end_frame))
 
     # check output exists
-    if not os.path.exists(output):
-        print('"{output}" directory does not exist.'.format(output=output))
-        os.makedirs(output)
-        print('"{output}" directory is created.'.format(output=output))
+    if not os.path.exists(output_folder):
+        print('"{output}" directory does not exist.'.format(output=output_folder))
+        os.makedirs(output_folder)
+        print('"{output}" directory is created.'.format(output=output_folder))
 
     # capture video
     print('Converting is started.')
@@ -73,13 +74,14 @@ def video_to_frames(input, output, prefix, format, start=0, end=None):
     # loop for frames
     frame_count = 0
     while success:
-        if ((end is not None) and (start <= frame_count <= end)) or ((end is None) and (start <= frame_count)):
-            frame_file_name = '{prefix}{frame_count:05d}.{format}'.format(prefix=prefix,
+        if ((end_frame is not None) and (start_frame <= frame_count <= end_frame)) \
+                or ((end_frame is None) and (start_frame <= frame_count)):
+            frame_file_name = '{prefix}{frame_count:05d}.{format}'.format(prefix=name_prefix,
                                                                           frame_count=frame_count,
                                                                           format=format)
 
             # save frame as image
-            save_image(image_data=frame, image_file_name=frame_file_name, image_directory_path=output)
+            save_image(image_data=frame, image_file_name=frame_file_name, image_directory_path=output_folder)
 
         # read next frame
         success, frame = video_capture.read()
