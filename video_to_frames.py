@@ -65,10 +65,10 @@ def video_to_frames(input_video, output_folder, name_prefix, frame_format, start
 
     # capture video
     print('Converting is started.')
-    video_capture = cv2.VideoCapture(input)
+    video_capture = cv2.VideoCapture(filename=input_video)
 
     # read frame
-    print('"{input}" is reading.'.format(input=input))
+    print('"{input}" is reading.'.format(input=input_video))
     success, frame = video_capture.read()
 
     # loop for frames
@@ -78,7 +78,7 @@ def video_to_frames(input_video, output_folder, name_prefix, frame_format, start
                 or ((end_frame is None) and (start_frame <= frame_count)):
             frame_file_name = '{prefix}{frame_count:05d}.{format}'.format(prefix=name_prefix,
                                                                           frame_count=frame_count,
-                                                                          format=format)
+                                                                          format=frame_format)
 
             # save frame as image
             save_image(image_data=frame, image_file_name=frame_file_name, image_directory_path=output_folder)
