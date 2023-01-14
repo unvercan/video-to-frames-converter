@@ -107,7 +107,8 @@ def convert_video_to_frames(input_video=PARAMETER['input_video'], output_folder=
                                                                                      frame_format=frame_format)
 
             # save frame as image file
-            save_image_file(image_data=frame, image_file_name=frame_file_name, directory_path=output_folder)
+            save_image_file(image_data=frame, image_file_name=frame_file_name,
+                            directory_path=output_folder, show_info=True)
 
         # read next frame
         success, frame = video_capture.read()
@@ -117,7 +118,7 @@ def convert_video_to_frames(input_video=PARAMETER['input_video'], output_folder=
 
 
 # save image data as image file function
-def save_image_file(image_data, image_file_name, directory_path, show_info=True):
+def save_image_file(image_data, image_file_name, directory_path=PARAMETER['output_folder'], show_info=True):
     image_file_path = os.path.join(directory_path, image_file_name)
     cv2.imwrite(image_file_path, image_data)
     if show_info:
