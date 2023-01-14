@@ -29,7 +29,7 @@ def main():
     argument_parser.add_argument('-i', '--input',
                                  type=str,
                                  default=PARAMETER['input_video'],
-                                 help='path to video file')
+                                 help='path to input video file')
 
     argument_parser.add_argument('-o', '--output',
                                  type=str,
