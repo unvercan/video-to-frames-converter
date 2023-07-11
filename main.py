@@ -2,7 +2,7 @@
 import argparse
 
 import config
-from convert import convert_video_to_frames
+from converter import convert_video_to_frames
 
 
 # main function
