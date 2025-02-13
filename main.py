@@ -1,55 +1,37 @@
-# -*- coding: utf-8 -*-
 import argparse
+import logging
+from pathlib import Path
 
-import config
-from converter import convert_video_to_frames
+from app import process
+from config import DEFAULT
 
+if __name__ == "__main__":
+    # configure logging
+    logging.basicConfig(level=logging.INFO, format=DEFAULT["logging_format"])
 
-# main function
-def main():
-    # settings
-    argument_parser = argparse.ArgumentParser()
+    # command-line argument parser
+    parser = argparse.ArgumentParser()
 
-    # create arguments
-    argument_parser.add_argument('-i', '--input',
-                                 type=str,
-                                 default=config.PARAMETER['input_video'],
-                                 help='path to input video file')
+    # parsing command-line arguments
+    parser.add_argument("-i", "--input", type=Path, default=DEFAULT["input"], help="path to input video file")
+    parser.add_argument("-o", "--output", type=Path, default=DEFAULT["output"], help="path to output frames directory")
+    parser.add_argument("-p", "--prefix", type=str, default=DEFAULT["prefix"], help="frame name prefix")
+    parser.add_argument("-f", "--format", type=str, default=DEFAULT["format"], help="frame as image format")
+    parser.add_argument("-s", "--start", type=int, default=DEFAULT["start"], help="start frame index")
+    parser.add_argument("-e", "--end", type=int, default=DEFAULT["end"], help="end frame index")
 
-    argument_parser.add_argument('-o', '--output',
-                                 type=str,
-                                 default=config.PARAMETER['output_folder'],
-                                 help='path to output frames directory')
+    arguments = parser.parse_args()
 
-    argument_parser.add_argument('-p', '--prefix',
-                                 type=str,
-                                 default=config.PARAMETER['name_prefix'],
-                                 help='frame name prefix')
+    logging.info("Arguments: input='{input}' output:'{output}' prefix:'{prefix} format:'{format} start:'{start} end:'{end}'"
+                 .format(input=arguments.input, output=arguments.output, prefix=arguments.prefix, format=arguments.format, start=arguments.start, end=arguments.end))
 
-    argument_parser.add_argument('-f', '--format',
-                                 type=str,
-                                 default=config.PARAMETER['frame_format'],
-                                 help='frame as image format')
+    # check if the input file exists
+    if not arguments.input.exists():
+        logging.error("Error: Input file '{input}' does not exist.".format(input=arguments.input))
+        exit(1)
 
-    argument_parser.add_argument('-s', '--start',
-                                 type=int,
-                                 default=config.PARAMETER['start_frame'],
-                                 help='start frame index')
+    # ensure the output directory exists
+    arguments.output.mkdir(parents=True, exist_ok=True)
 
-    argument_parser.add_argument('-e', '--end',
-                                 type=int,
-                                 default=config.PARAMETER['end_frame'],
-                                 help='end frame index')
-
-    # parse arguments
-    arguments = argument_parser.parse_args()
-
-    # convert video to frames
-    convert_video_to_frames(input_video=arguments.input, output_folder=arguments.output,
-                            name_prefix=arguments.prefix, frame_format=arguments.format,
-                            start_frame=arguments.start, end_frame=arguments.end)
-
-
-# main
-if __name__ == '__main__':
-    main()
+    # process
+    process(input=arguments.input, output=arguments.output, prefix=arguments.prefix, format=arguments.format, start=arguments.start, end=arguments.end)

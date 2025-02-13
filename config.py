@@ -1,17 +1,13 @@
-# -*- coding: utf-8 -*-
+from pathlib import Path
 
-import os
-
-# file path
-PROJECT_FOLDER = os.path.dirname(os.path.abspath(__file__))
-
-# default parameters
-PARAMETER = {
-    'input_video': os.path.join(PROJECT_FOLDER, 'input.avi'),
-    'output_folder': os.path.join(PROJECT_FOLDER, 'frames'),
-    'name_prefix': '',
-    'frame_format': 'jpg',
-    'start_frame': 0,
-    'end_frame': None,
-    'show_info': True
+# default values
+DEFAULT: dict = {
+    "input": Path.cwd() / "input.mp4",
+    "output": Path.cwd() / "frames",
+    "prefix": "",
+    "format": "jpg",
+    "start": 0,
+    "end": None,
+    "datetime_format": "%Y%m%d_%H%M%S",
+    "logging_format": "%(asctime)s - %(levelname)s - %(message)s",
 }
